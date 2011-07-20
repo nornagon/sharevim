@@ -58,7 +58,11 @@ net.createServer (c) ->
 	client.open 'hello', 'text', {host: 'localhost', port:8000}, (doc, err) ->
 		sharedoc = doc
 		nb_func 1, 'insert', '0', JSON.stringify(doc.snapshot)
-		doc.on 'change', (op) ->
-			
+		doc.on 'remoteop', (op) ->
+			for component in op
+				if component.d?
+					nb_func 1, 'remove', component.p, component.d.length
+				if component.i?
+					nb_func 1, 'insert', component.p, JSON.stringify(component.i)
 
 .listen 3424
